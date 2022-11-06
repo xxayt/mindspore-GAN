@@ -1,7 +1,7 @@
-# GAN
+# GAN based on MindSpore
 
-GAN based on MindSpore
+>   本案例采用的MNIST数据集请于[此处](http://yann.lecun.com/exdb/mnist/)下载解压（注意本项目将 `t10k-images-idx3-ubyte` 改为 `t10k-images.idx3-ubyte` ）
 
-有关模型的介绍请参见"GAN.ipynb"
+有关模型的详细介绍请参见可直接运行的 [GAN.ipynb](https://github.com/xxayt/mindspore-GAN/blob/main/GAN.ipynb) 或直接运行 [train.py](https://github.com/xxayt/mindspore-GAN/blob/main/train.py) 亦可
 
-在result/checkpoints文件夹下保存了训练完成的生成器和判别器模型50~90的参数
+在  [`result/checkpoints`](https://github.com/xxayt/mindspore-GAN/tree/main/result/checkpoints) 文件夹下保存了训练完成的生成器和判别器模型的参数
