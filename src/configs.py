@@ -1,0 +1,11 @@
+TOTLE_EPOCH = 100
+latent_size = 100
+BATCH_SIZE = 128
+lr = 0.0002
+b1 = 0.5 # decay of first order momentum of gradient
+b2 = 0.999 # decay of first order momentum of gradient
+channels = 1
+img_size = 28
+batch_size_test = 10
+batch_size_valid = 1000
+gap = 1
