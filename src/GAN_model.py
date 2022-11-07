@@ -5,6 +5,7 @@ import mindspore.ops.functional as F
 import mindspore.ops.composite as C
 from src.configs import *
 
+# 重写reshape方法
 class Reshape(nn.Cell):
     def __init__(self, shape, auto_prefix=True):
         super().__init__(auto_prefix=auto_prefix)
@@ -34,7 +35,6 @@ class Generator(nn.Cell):
         self.model.append(nn.BatchNorm1d(1024))
         self.model.append(nn.ReLU())
         # [N, 1024] -> [N, 784]
-        # self.model.append(nn.Dropout(0.3))
         self.model.append(nn.Dense(1024, img_size * img_size))  # 经过线性变换将其变成784维
         self.model.append(nn.Tanh())  # 经过Tanh激活函数是希望生成的假的图片数据分布能够在-1～1之间
 
