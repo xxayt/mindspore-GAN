@@ -4,4 +4,4 @@
 
 有关模型的详细介绍请参见可直接运行的 [GAN.ipynb](https://github.com/xxayt/mindspore-GAN/blob/main/GAN.ipynb) 或直接运行 [train.py](https://github.com/xxayt/mindspore-GAN/blob/main/train.py) 亦可
 
-在  [`result/checkpoints`](https://github.com/xxayt/mindspore-GAN/tree/main/result/checkpoints) 文件夹下保存了训练完成的生成器和判别器模型的参数
+在  [`result/checkpoints`](https://github.com/xxayt/mindspore-GAN/tree/main/result/checkpoints) 文件夹下保存部分了训练完成的生成器和判别器模型的参数
