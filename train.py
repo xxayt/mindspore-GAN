@@ -34,9 +34,9 @@ context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 # 获取处理后的数据集
-dataset = create_dataset_train(batch_size=BATCH_SIZE, repeat_size=1, latent_size=latent_size)
+dataset_mnist = create_dataset_train(batch_size=BATCH_SIZE, repeat_size=1, latent_size=latent_size)
 # 获取数据集大小
-iter_size = dataset.get_dataset_size()
+iter_size = dataset_mnist.get_dataset_size()
 
 # 利用随机种子创建一批隐码用来观察G
 np.random.seed(2323)
@@ -63,7 +63,7 @@ G_losses, D_losses = [], []
 
 for epoch in range(TOTLE_EPOCH):
     start = time.time()
-    for (iter, data) in enumerate(dataset):
+    for (iter, data) in enumerate(dataset_mnist):
         image, latent_code = data
         image = (image - 127.5) / 127.5 # [0, 255] -> [-1, 1]
         image = ops.Reshape()(image, (image.shape[0], 1, image.shape[1], image.shape[2]))

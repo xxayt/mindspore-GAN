@@ -21,36 +21,32 @@ test_labels_file = os.path.join(DATA_PATH, 't10k-labels.idx1-ubyte')
 
 """解析图片数据"""
 def decode_idx3_ubyte(idx3_ubyte_file):
-    # get the binary date
+    # 获取二进制数据
     bin_data = open(idx3_ubyte_file, 'rb').read()
     offset = 0
     fmt_header = '>iiii'
     magic_number, num_images, num_rows, num_cols = struct.unpack_from(fmt_header, bin_data, offset)
-    print('magic numbers :%d, image numbers: %d, image size: %d*%d' % (magic_number, num_images, num_rows, num_cols))
-    # parse date set
+    print('magic numbers: %d, image numbers: %d, image size: %d*%d' % (magic_number, num_images, num_rows, num_cols))  # 图片magic number 为2051
+    # 解析数据集
     image_size = num_rows * num_cols
     offset += struct.calcsize(fmt_header)
-    print(offset)
     fmt_image = '>' + str(image_size) + 'B'
     print(fmt_image, offset, struct.calcsize(fmt_image))
     images = np.empty((num_images, num_rows, num_cols))
     for i1 in range(num_images):
-        if (i1 + 1) % 10000 == 0:
-            print('parsed %d' % (i1 + 1) + 'images')
-            print(offset)
         images[i1] = np.array(struct.unpack_from(fmt_image, bin_data, offset)).reshape((num_rows, num_cols))
         offset += struct.calcsize(fmt_image)
     return images
 
 """解析标签数据"""
 def decode_idx1_ubyte(idx1_ubyte_file):
-    # get the binary date
+    # 获取二进制数据
     bin_data = open(idx1_ubyte_file, 'rb').read()
     offset = 0
     fmt_header = '>ii'
     magic_number, num_images = struct.unpack_from(fmt_header, bin_data, offset)
-    print('magic numbers :%d, image numbers : %d' % (magic_number, num_images))
-    # parse date set
+    print('magic numbers: %d, label numbers: %d' % (magic_number, num_images))  # 文本magic number 为2049
+    # 解析数据集
     offset += struct.calcsize(fmt_header)
     fmt_image = '>B'
     labels = np.empty(num_images)
@@ -79,10 +75,10 @@ class DatasetGenerator_valid:
 
 
 # 创建训练数据集,GAN网络只需要训练数据即可
-def create_dataset_train(batch_size=64, repeat_size=1, latent_size=100):
+def create_dataset_train(batch_size=128, repeat_size=1, latent_size=100):
     dataset_generator = DatasetGenerator()
     dataset1 = dataset.GeneratorDataset(dataset_generator, ["image", "label"], shuffle=True)
-    # 数据映射操作
+    # 数据增强
     mnist_ds = dataset1.map(
         operations=lambda x: (
             x.astype("float32"), # 未归一化
@@ -97,10 +93,10 @@ def create_dataset_train(batch_size=64, repeat_size=1, latent_size=100):
     return mnist_ds
 
 # 创建验证数据集
-def create_dataset_valid(batch_size=64, repeat_size=1, latent_size=100):
+def create_dataset_valid(batch_size=128, repeat_size=1, latent_size=100):
     dataset_generator = DatasetGenerator_valid()
-    dataset = dataset.GeneratorDataset(dataset_generator, ["image", "label"], shuffle=False)
-    mnist_ds = dataset.map(
+    dataset2 = dataset.GeneratorDataset(dataset_generator, ["image", "label"], shuffle=False)
+    mnist_ds = dataset2.map(
         operations=lambda x: (
             x[-10000:].astype("float32"),
             np.random.normal(size=(latent_size)).astype("float32")
@@ -110,27 +106,26 @@ def create_dataset_valid(batch_size=64, repeat_size=1, latent_size=100):
     )
     # 批量操作
     mnist_ds = mnist_ds.batch(batch_size, True)
-    mnist_ds = mnist_ds.repeat(1)
+    # mnist_ds = mnist_ds.repeat(1)   # 数据加倍
     return mnist_ds
 
+'''
 # 获取处理后的数据集
-dataset = create_dataset_train(batch_size=BATCH_SIZE, repeat_size=1, latent_size=latent_size)
-print(type(dataset))
+dataset_mnist = create_dataset_train(batch_size=BATCH_SIZE, repeat_size=1, latent_size=latent_size)
+print(type(dataset_mnist))
+
 # 获取数据集大小
-iter_size = dataset.get_dataset_size()
+iter_size = dataset_mnist.get_dataset_size()
 print('iter size is %d' % (iter_size))
 
-
-
-
-# 可视化部分训练数据
 src_data = './result/src_data.png'
-
 # 可视化部分训练数据
-def visualize(dataset):
-    data_iter = next(dataset.create_dict_iterator(output_numpy=True))
+def visualize(dataset_mnist):
+    data_iter = next(dataset_mnist.create_dict_iterator(output_numpy=True))
+
     figure = plt.figure(figsize=(5, 5))
     cols, rows = 5, 5
+
     for idx in range(1, cols * rows + 1):
         image = data_iter['image'][idx]
         figure.add_subplot(rows, cols, idx)
@@ -139,4 +134,5 @@ def visualize(dataset):
     plt.savefig(src_data)
     plt.show()
     
-visualize(dataset)
+visualize(dataset_mnist)
+'''
