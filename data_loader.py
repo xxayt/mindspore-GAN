@@ -7,7 +7,7 @@ import mindspore
 from mindspore import dataset
 from src.configs import *
 
-DATA_PATH = 'data/MNIST_DATA'
+DATA_PATH = 'data'
 
 # train set
 train_images_file = os.path.join(DATA_PATH, 'train-images.idx3-ubyte') 

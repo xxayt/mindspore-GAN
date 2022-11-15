@@ -3,6 +3,8 @@ import time
 import random
 import matplotlib.pyplot as plt
 import numpy as np
+import mindspore
+from tqdm import tqdm
 from mindspore import nn
 from mindspore import ops
 from mindspore import Tensor, context, save_checkpoint
@@ -15,6 +17,7 @@ from src.configs import *
 from src.GAN_model import *
 from src.TrainOneStep import *
 from src.utils import *
+import mindspore
 # 设置参数保存路径
 checkpoints_path = "./result/checkpoints"
 os.makedirs(checkpoints_path, exist_ok=True)
@@ -30,13 +33,12 @@ def save_imgs(gen_imgs1, idx): # 保存生成的test图像
     plt.savefig(image_path+"/{}.png".format(idx))
 
 # 选择执行模式为图模式；指定训练使用的平台为"GPU"，如需使用昇腾硬件可将其替换为"Ascend"
-context.set_context(mode=context.GRAPH_MODE, device_target="GPU")
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+mindspore.set_context(mode=mindspore.GRAPH_MODE, device_target="Ascend")
 
 # 获取处理后的数据集
-dataset_mnist = create_dataset_train(batch_size=BATCH_SIZE, repeat_size=1, latent_size=latent_size)
+dataset = create_dataset_train(batch_size=BATCH_SIZE, repeat_size=1, latent_size=latent_size)
 # 获取数据集大小
-iter_size = dataset_mnist.get_dataset_size()
+iter_size = dataset.get_dataset_size()
 
 # 利用随机种子创建一批隐码用来观察G
 np.random.seed(2323)
@@ -63,7 +65,8 @@ G_losses, D_losses = [], []
 
 for epoch in range(TOTLE_EPOCH):
     start = time.time()
-    for (iter, data) in enumerate(dataset_mnist):
+    train_bar = tqdm(dataset_mnist, ncols=100, total=iter_size)
+    for (iter, data) in enumerate(train_bar):
         image, latent_code = data
         image = (image - 127.5) / 127.5 # [0, 255] -> [-1, 1]
         image = ops.Reshape()(image, (image.shape[0], 1, image.shape[1], image.shape[2]))
