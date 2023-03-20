@@ -1,3 +1,5 @@
+我们的实例模型被选入[MindSpore官网的应用实践教程](https://www.mindspore.cn/tutorials/application/zh-CN/master/generative/gan.html)！
+
 # GAN based on MindSpore
 
 > [paperswithcode相关链接](https://paperswithcode.com/paper/generative-adversarial-networks)  
